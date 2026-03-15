@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terms of Service – AuraCalendar</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d1a; color: #f0f0ff;
+      min-height: 100vh; overflow-x: hidden; display: block;
+    }
+    .bg-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 85% 15%, rgba(118,75,162,.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 15% 85%, rgba(74,124,255,.1) 0%, transparent 50%),
+        #0d0d1a;
+    }
+ 
+    /* NAV */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(13,13,26,.85);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(12px);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; }
+    .logo img { height: 46px; width: auto; filter: drop-shadow(0 2px 10px rgba(74,200,255,.3)); }
+    .nav-right { display: flex; gap: 10px; align-items: center; }
+    .nav-btn {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.65); padding: 8px 18px; border-radius: 9px;
+      font-size: 13px; font-weight: 500; text-decoration: none; display: inline-block;
+      transition: all .2s; width: auto; margin-top: 0;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.13); color: #fff; transform: none; box-shadow: none; }
+    .nav-btn.active { color: #c084fc; border-color: rgba(118,75,162,.35); background: rgba(118,75,162,.1); }
+ 
+    /* HERO BAND */
+    .page-hero {
+      position: relative; z-index: 5;
+      text-align: center; padding: 64px 24px 48px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(118,75,162,.1); border: 1px solid rgba(118,75,162,.25);
+      border-radius: 50px; padding: 5px 16px; margin-bottom: 20px;
+      font-size: 12px; font-weight: 500; color: #c084fc;
+    }
+    .page-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 54px); color: #fff; margin-bottom: 12px;
+    }
+    .page-hero p { font-size: 14px; color: rgba(255,255,255,.35); }
+ 
+    /* CONTENT */
+    .content-wrap {
+      position: relative; z-index: 5;
+      max-width: 800px; margin: 0 auto;
+      padding: 56px 24px 100px;
+    }
+ 
+    /* Table of Contents */
+    .toc {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px; padding: 28px 32px; margin-bottom: 52px;
+    }
+    .toc h3 { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+    .toc ol { list-style: none; padding: 0; counter-reset: toc-counter; display: flex; flex-direction: column; gap: 8px; }
+    .toc ol li { counter-increment: toc-counter; display: flex; align-items: center; gap: 10px; }
+    .toc ol li::before { content: counter(toc-counter, decimal-leading-zero); font-size: 11px; font-weight: 600; color: #c084fc; min-width: 24px; }
+    .toc a { color: rgba(255,255,255,.6); text-decoration: none; font-size: 14px; transition: color .2s; }
+    .toc a:hover { color: #c084fc; }
+ 
+    /* Sections */
+    .policy-section { margin-bottom: 52px; }
+    .section-number {
+      display: inline-block; font-size: 11px; font-weight: 600; color: #c084fc;
+      text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
+    }
+    .policy-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; color: #fff; margin-bottom: 20px;
+      padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .policy-section p {
+      font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.85; margin-bottom: 16px;
+    }
+    .policy-section p:last-child { margin-bottom: 0; }
+    .policy-section ul {
+      list-style: none; padding: 0; margin: 16px 0; display: flex; flex-direction: column; gap: 10px;
+    }
+    .policy-section ul li {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.7;
+    }
+    .policy-section ul li::before {
+      content: ''; display: block; width: 6px; height: 6px; border-radius: 50%;
+      background: #c084fc; flex-shrink: 0; margin-top: 8px;
+    }
+ 
+    /* Boxes */
+    .highlight-box {
+      background: rgba(118,75,162,.08); border: 1px solid rgba(118,75,162,.2);
+      border-radius: 14px; padding: 20px 24px; margin: 20px 0;
+    }
+    .highlight-box p { color: rgba(255,255,255,.65); margin: 0; font-size: 13px; line-height: 1.75; }
+    .info-box {
+      background: rgba(74,124,255,.07); border: 1px solid rgba(74,124,255,.18);
+      border-radius: 14px; padding: 20px 24px; margin: 20px 0;
+    }
+    .info-box p { color: rgba(255,255,255,.6); margin: 0; font-size: 13px; line-height: 1.75; }
+    .warn-box {
+      background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.2);
+      border-radius: 14px; padding: 20px 24px; margin: 20px 0;
+    }
+    .warn-box p { color: rgba(255,255,255,.6); margin: 0; font-size: 13px; line-height: 1.75; }
+ 
+    /* Numbered clause list */
+    .clause-list { list-style: none; padding: 0; margin: 16px 0; counter-reset: clause; display: flex; flex-direction: column; gap: 12px; }
+    .clause-list li { counter-increment: clause; display: flex; gap: 14px; font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.7; }
+    .clause-list li::before {
+      content: counter(clause) '.'; font-size: 12px; font-weight: 600; color: #c084fc;
+      min-width: 20px; flex-shrink: 0; padding-top: 2px;
+    }
+ 
+    /* Contact card */
+    .contact-card {
+      background: linear-gradient(135deg, rgba(118,75,162,.12), rgba(74,124,255,.12));
+      border: 1px solid rgba(118,75,162,.2); border-radius: 18px; padding: 32px;
+      text-align: center;
+    }
+    .contact-card h3 { font-size: 18px; color: #fff; margin-bottom: 10px; }
+    .contact-card p { font-size: 14px; color: rgba(255,255,255,.45); margin-bottom: 20px; }
+    .contact-email {
+      display: inline-block;
+      background: rgba(118,75,162,.18); border: 1px solid rgba(118,75,162,.35);
+      color: #c084fc; padding: 10px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 500; text-decoration: none; transition: all .2s;
+    }
+    .contact-email:hover { background: rgba(118,75,162,.3); color: #fff; }
+ 
+    /* Footer */
+    .page-footer {
+      position: relative; z-index: 5;
+      text-align: center; padding: 28px 24px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: 13px; color: rgba(255,255,255,.22);
+    }
+    .page-footer a { color: rgba(255,255,255,.38); text-decoration: none; transition: color .2s; }
+    .page-footer a:hover { color: #fff; }
+ 
+ 
+    /* ── Contact Form ── */
+    .contact-form-card {
+      background: linear-gradient(135deg, rgba(118,75,162,.1), rgba(74,124,255,.08));
+      border: 1px solid rgba(118,75,162,.22); border-radius: 20px; padding: 32px;
+    }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .cf-group { margin-bottom: 16px; }
+    .cf-label {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: .6px;
+      text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 7px;
+    }
+    .cf-input {
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+      color: #fff; font-size: 14px; font-family: inherit; transition: all .2s;
+      box-sizing: border-box;
+    }
+    .cf-input::placeholder { color: rgba(255,255,255,.22); }
+    .cf-input:focus { outline: none; border-color: #c084fc; background: rgba(118,75,162,.12); box-shadow: 0 0 0 4px rgba(118,75,162,.12); }
+    .cf-input option { background: #1a1a2e; color: #fff; }
+    .cf-textarea { resize: vertical; min-height: 110px; }
+    .cf-submit {
+      width: 100%; padding: 14px; margin-top: 4px;
+      background: linear-gradient(135deg,#764ba2,#4a7cff);
+      border: none; border-radius: 12px; color: #fff;
+      font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all .3s; box-shadow: 0 4px 14px rgba(118,75,162,.3);
+    }
+    .cf-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(118,75,162,.45); }
+    .cf-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .cf-status { margin-top: 14px; font-size: 13px; text-align: center; min-height: 20px; }
+    .cf-status.success { color: #34d399; }
+    .cf-status.error   { color: #f87171; }
+    @media(max-width:560px) { .cf-row { grid-template-columns: 1fr; } }
+    @media(max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .toc { padding: 22px 20px; }
+      .policy-section h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg-glow"></div>
+ 
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="AuraCalendar">
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-btn">← Home</a>
+    <a href="privacy.html" class="nav-btn">Privacy Policy</a>
+    <a href="mycal.html" class="nav-btn active">Open Calendar</a>
+  </div>
+</nav>
+ 
+<!-- HERO -->
+<div class="page-hero">
+  <div class="page-badge">📋 Please read carefully</div>
+  <h1>Terms of Service</h1>
+  <p>Last updated: March 2026 &nbsp;·&nbsp; Effective immediately</p>
+</div>
+ 
+<!-- CONTENT -->
+<div class="content-wrap">
+ 
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#t1">Acceptance of terms</a></li>
+      <li><a href="#t2">Description of service</a></li>
+      <li><a href="#t3">User accounts and data</a></li>
+      <li><a href="#t4">Acceptable use</a></li>
+      <li><a href="#t5">Email reminders and delivery</a></li>
+      <li><a href="#t6">Intellectual property</a></li>
+      <li><a href="#t7">Disclaimer of warranties</a></li>
+      <li><a href="#t8">Limitation of liability</a></li>
+      <li><a href="#t9">Termination</a></li>
+      <li><a href="#t10">Governing law</a></li>
+      <li><a href="#t11">Changes to these terms</a></li>
+      <li><a href="#t12">Contact</a></li>
+    </ol>
+  </div>
+ 
+  <!-- INTRO -->
+  <div class="highlight-box" style="margin-bottom:52px;">
+    <p>Welcome to AuraCalendar. These Terms of Service ("Terms") govern your access to and use of the AuraCalendar website and services. By using AuraCalendar, you agree to be bound by these Terms. If you do not agree, please do not use our service.</p>
+  </div>
+ 
+  <!-- T1 -->
+  <div class="policy-section" id="t1">
+    <span class="section-number">01 — Acceptance of terms</span>
+    <h2>Acceptance of Terms</h2>
+    <p>By accessing or using AuraCalendar in any way — including browsing the website, adding an event, or receiving an email reminder — you confirm that you have read, understood, and agree to be bound by these Terms and our Privacy Policy.</p>
+    <p>If you are using AuraCalendar on behalf of an organisation, you represent that you have the authority to bind that organisation to these Terms.</p>
+  </div>
+ 
+  <!-- T2 -->
+  <div class="policy-section" id="t2">
+    <span class="section-number">02 — Description of service</span>
+    <h2>Description of Service</h2>
+    <p>AuraCalendar is a free web-based calendar and event reminder service that allows users to:</p>
+    <ul>
+      <li>View a public holiday calendar personalised to their country.</li>
+      <li>Create personal events on their own private calendar.</li>
+      <li>Receive automated email reminders before their saved events.</li>
+    </ul>
+    <p>AuraCalendar is provided free of charge. We reserve the right to introduce premium features in the future, with clear communication before any charges are introduced.</p>
+    <div class="info-box">
+      <p>ℹ The service is currently in active development. Features may change, be added, or be removed. We will always aim to provide reasonable notice of significant changes.</p>
+    </div>
+  </div>
+ 
+  <!-- T3 -->
+  <div class="policy-section" id="t3">
+    <span class="section-number">03 — User accounts and data</span>
+    <h2>User Accounts and Data</h2>
+    <p>AuraCalendar does not currently require account registration. Events are associated with your email address, which acts as your identifier.</p>
+    <ol class="clause-list">
+      <li>You are responsible for providing an accurate email address. Reminders will be sent only to the address you enter.</li>
+      <li>You are responsible for all events created under your email address.</li>
+      <li>You may have your data deleted at any time by contacting us (see Section 12).</li>
+      <li>We are not responsible for events not received if you provide an incorrect email address.</li>
+      <li>You may not use another person's email address without their explicit consent.</li>
+    </ol>
+  </div>
+ 
+  <!-- T4 -->
+  <div class="policy-section" id="t4">
+    <span class="section-number">04 — Acceptable use</span>
+    <h2>Acceptable Use</h2>
+    <p>You agree to use AuraCalendar only for lawful purposes and in a manner consistent with these Terms. You must not:</p>
+    <ul>
+      <li>Use the service to send unsolicited emails or spam to any person.</li>
+      <li>Attempt to overload, abuse, or disrupt the service or its infrastructure.</li>
+      <li>Use automated tools to submit large volumes of events for the purpose of testing or abusing the email system.</li>
+      <li>Attempt to reverse-engineer, copy, or reproduce any part of the AuraCalendar codebase or design without permission.</li>
+      <li>Use the service for any illegal purpose under applicable law.</li>
+      <li>Impersonate another person or organisation by using their email address.</li>
+    </ul>
+    <div class="warn-box">
+      <p>⛔ Violation of the acceptable use policy may result in your email address being blocked from the service and, where applicable, being reported to relevant authorities.</p>
+    </div>
+  </div>
+ 
+  <!-- T5 -->
+  <div class="policy-section" id="t5">
+    <span class="section-number">05 — Email reminders and delivery</span>
+    <h2>Email Reminders and Delivery</h2>
+    <p>We make reasonable efforts to deliver all reminder emails on time and accurately. However, we cannot guarantee delivery in the following circumstances:</p>
+    <ul>
+      <li>Your email provider marks our messages as spam or junk.</li>
+      <li>There is a temporary outage or delay in our email delivery service (Gmail SMTP).</li>
+      <li>There is a temporary outage in our cloud infrastructure (Firebase / Google Cloud).</li>
+      <li>You provided an incorrect or inactive email address.</li>
+    </ul>
+    <p>We strongly recommend not relying solely on AuraCalendar email reminders for time-critical events. Always maintain a backup reminder in another application for important appointments.</p>
+    <div class="info-box">
+      <p>💡 If you do not receive a confirmation email after saving an event, please check your spam folder first. If it is not there, the email address may have been entered incorrectly.</p>
+    </div>
+  </div>
+ 
+  <!-- T6 -->
+  <div class="policy-section" id="t6">
+    <span class="section-number">06 — Intellectual property</span>
+    <h2>Intellectual Property</h2>
+    <p>All content on the AuraCalendar website — including the logo, design, text, graphics, and code — is the intellectual property of AuraCalendar and is protected by applicable copyright and trademark laws.</p>
+    <p>You may not copy, reproduce, distribute, modify, or create derivative works of any part of AuraCalendar without our prior written consent.</p>
+    <p>The AuraCalendar name, logo, and tagline "Plan With Clarity" are proprietary marks of AuraCalendar. You may not use them for any purpose without explicit written permission.</p>
+  </div>
+ 
+  <!-- T7 -->
+  <div class="policy-section" id="t7">
+    <span class="section-number">07 — Disclaimer of warranties</span>
+    <h2>Disclaimer of Warranties</h2>
+    <p>AuraCalendar is provided on an "as is" and "as available" basis without warranties of any kind, either express or implied. To the fullest extent permitted by law, we disclaim all warranties including but not limited to:</p>
+    <ul>
+      <li>Merchantability and fitness for a particular purpose.</li>
+      <li>Uninterrupted, error-free, or timely delivery of the service.</li>
+      <li>The accuracy of holiday data displayed on the public calendar (sourced from third-party APIs).</li>
+      <li>The guaranteed delivery of all reminder emails.</li>
+    </ul>
+  </div>
+ 
+  <!-- T8 -->
+  <div class="policy-section" id="t8">
+    <span class="section-number">08 — Limitation of liability</span>
+    <h2>Limitation of Liability</h2>
+    <p>To the maximum extent permitted by applicable law, AuraCalendar and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from:</p>
+    <ul>
+      <li>Your use of or inability to use the service.</li>
+      <li>A missed event or appointment due to a failed or late reminder email.</li>
+      <li>Any unauthorised access to or alteration of your event data.</li>
+      <li>Any third-party conduct or content.</li>
+    </ul>
+    <p>In jurisdictions that do not allow the exclusion of certain warranties or limitation of liability, our liability shall be limited to the fullest extent permitted by law.</p>
+  </div>
+ 
+  <!-- T9 -->
+  <div class="policy-section" id="t9">
+    <span class="section-number">09 — Termination</span>
+    <h2>Termination</h2>
+    <p>You may stop using AuraCalendar at any time. You may also request that we delete all your data (see Section 12).</p>
+    <p>We reserve the right to suspend or terminate access to our service — including blocking an email address from submitting events — if we determine in our sole discretion that a user has violated these Terms, abused the service, or used it in a harmful manner.</p>
+    <p>Upon termination or deletion, all your stored events and personal data will be permanently removed from our systems within 7 business days.</p>
+  </div>
+ 
+  <!-- T10 -->
+  <div class="policy-section" id="t10">
+    <span class="section-number">10 — Governing law</span>
+    <h2>Governing Law</h2>
+    <p>These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions.</p>
+    <p>Any disputes arising from these Terms or your use of AuraCalendar shall be subject to the exclusive jurisdiction of the courts of Ludhiana, Punjab, India.</p>
+  </div>
+ 
+  <!-- T11 -->
+  <div class="policy-section" id="t11">
+    <span class="section-number">11 — Changes to these terms</span>
+    <h2>Changes to These Terms</h2>
+    <p>We may update these Terms from time to time. When we do, we will update the "Last updated" date at the top of this page. If the changes are significant, we will make reasonable efforts to notify users.</p>
+    <p>Continued use of AuraCalendar after any change to these Terms constitutes your acceptance of the new Terms. We encourage you to review this page periodically.</p>
+  </div>
+ 
+  <!-- T12 -->
+  <div class="policy-section" id="t12">
+    <span class="section-number">12 — Contact</span>
+    <h2>Contact Us</h2>
+    <p>Have a question about these Terms, want to report a violation, or need your data deleted? Fill in the form below and your message will be sent directly to our team. We typically respond within 2–3 business days.</p>
+    <div class="contact-form-card" id="contactSection">
+      <div class="cf-row">
+        <div class="cf-group">
+          <label class="cf-label">Your Name</label>
+          <input type="text" id="cf_name" class="cf-input" placeholder="e.g. john doeS">
+        </div>
+        <div class="cf-group">
+          <label class="cf-label">Your Email</label>
+          <input type="email" id="cf_email" class="cf-input" placeholder="you@gmail.com">
+        </div>
+      </div>
+      <div class="cf-group">
+        <label class="cf-label">Subject</label>
+        <select id="cf_subject" class="cf-input">
+          <option value="">Select a topic…</option>
+          <option value="Terms question">Question about Terms</option>
+          <option value="Report a violation">Report a violation</option>
+          <option value="Data deletion request">Delete my data</option>
+          <option value="Data access request">Access my data</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="cf-group">
+        <label class="cf-label">Message</label>
+        <textarea id="cf_message" class="cf-input cf-textarea" placeholder="Describe your question or request in detail…"></textarea>
+      </div>
+      <button class="cf-submit" id="cf_btn" onclick="sendContactForm()">Send Message →</button>
+      <div class="cf-status" id="cf_status"></div>
+    </div>
+  </div>
+ 
+</div>
+ 
+<!-- FOOTER -->
+<footer class="page-footer">
+  <p>© 2026 <strong style="color:rgba(255,255,255,.45)">AuraCalendar</strong> · Plan With Clarity
+    &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy</a>
+    &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a>
+    &nbsp;·&nbsp; <a href="index.html">Home</a>
+  </p>
+</footer>
+ 
+ 
+  <!-- EmailJS — sends form to your inbox without exposing your email -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    // ════════════════════════════════════════════════════════════════
+    //  EMAILJS SETUP — fill in your keys from emailjs.com dashboard
+    //  1. Sign up free at https://www.emailjs.com
+    //  2. Add a Gmail service  → copy the Service ID
+    //  3. Create an email template → copy the Template ID
+    //  4. Go to Account → copy your Public Key
+    // ════════════════════════════════════════════════════════════════
+   const EJS_PUBLIC_KEY  = 'hF7xK-p9LY47TCa1Y';
+    const EJS_SERVICE_ID  = 'service_tbm3pmq';
+    const EJS_TEMPLATE_ID = 'template_9o20jxp';
+ 
+    emailjs.init(EJS_PUBLIC_KEY);
+ 
+    async function sendContactForm() {
+      const name    = document.getElementById('cf_name').value.trim();
+      const email   = document.getElementById('cf_email').value.trim();
+      const subject = document.getElementById('cf_subject').value;
+      const message = document.getElementById('cf_message').value.trim();
+      const status  = document.getElementById('cf_status');
+      const btn     = document.getElementById('cf_btn');
+ 
+      if (!name || !email || !subject || !message) {
+        status.textContent = '⚠ Please fill in all fields before sending.';
+        status.className = 'cf-status error'; return;
+      }
+      if (!email.includes('@')) {
+        status.textContent = '⚠ Please enter a valid email address.';
+        status.className = 'cf-status error'; return;
+      }
+ 
+      btn.disabled = true; btn.textContent = 'Sending…';
+      status.textContent = ''; status.className = 'cf-status';
+ 
+      try {
+        await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
+          from_name:    name,
+          from_email:   email,
+          subject:      subject,
+          message:      message,
+          reply_to:     email,
+          page_source:  'Terms of Service page',
+        });
+ 
+        btn.textContent = '✓ Message Sent!';
+        status.textContent = 'Thank you! We will get back to you within 2–3 business days.';
+        status.className = 'cf-status success';
+        // Clear fields
+        ['cf_name','cf_email','cf_message'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('cf_subject').value = '';
+        setTimeout(() => { btn.disabled = false; btn.textContent = 'Send Message →'; }, 4000);
+ 
+      } catch (err) {
+        console.error('EmailJS error:', err);
+        btn.disabled = false; btn.textContent = 'Send Message →';
+        status.textContent = '❌ Failed to send. Please try again in a moment.';
+        status.className = 'cf-status error';
+      }
+    }
+  </script>
+</body>
+</html>

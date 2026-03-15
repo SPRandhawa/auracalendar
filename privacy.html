@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy – AuraCalendar</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d1a; color: #f0f0ff;
+      min-height: 100vh; overflow-x: hidden; display: block;
+    }
+ 
+    /* Subtle background */
+    .bg-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(74,124,255,.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 80%, rgba(118,75,162,.12) 0%, transparent 50%),
+        #0d0d1a;
+    }
+ 
+    /* NAV */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(13,13,26,.85);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(12px);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; }
+    .logo img { height: 46px; width: auto; filter: drop-shadow(0 2px 10px rgba(74,200,255,.3)); }
+    .nav-right { display: flex; gap: 10px; align-items: center; }
+    .nav-btn {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.65); padding: 8px 18px; border-radius: 9px;
+      font-size: 13px; font-weight: 500; text-decoration: none; display: inline-block;
+      transition: all .2s; width: auto; margin-top: 0;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.13); color: #fff; transform: none; box-shadow: none; }
+    .nav-btn.active { color: #7fa8ff; border-color: rgba(74,124,255,.35); background: rgba(74,124,255,.1); }
+ 
+    /* HERO BAND */
+    .page-hero {
+      position: relative; z-index: 5;
+      text-align: center; padding: 64px 24px 48px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(74,124,255,.1); border: 1px solid rgba(74,124,255,.25);
+      border-radius: 50px; padding: 5px 16px; margin-bottom: 20px;
+      font-size: 12px; font-weight: 500; color: #7fa8ff;
+    }
+    .page-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 54px); color: #fff; margin-bottom: 12px;
+    }
+    .page-hero p { font-size: 14px; color: rgba(255,255,255,.35); }
+ 
+    /* CONTENT */
+    .content-wrap {
+      position: relative; z-index: 5;
+      max-width: 800px; margin: 0 auto;
+      padding: 56px 24px 100px;
+    }
+ 
+    /* Table of Contents */
+    .toc {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px; padding: 28px 32px; margin-bottom: 52px;
+    }
+    .toc h3 { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+    .toc ol { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .toc ol li { counter-increment: toc-counter; display: flex; align-items: center; gap: 10px; }
+    .toc ol li::before { content: counter(toc-counter, decimal-leading-zero); font-size: 11px; font-weight: 600; color: #4a7cff; min-width: 24px; }
+    .toc ol { counter-reset: toc-counter; }
+    .toc a { color: rgba(255,255,255,.6); text-decoration: none; font-size: 14px; transition: color .2s; }
+    .toc a:hover { color: #7fa8ff; }
+ 
+    /* Sections */
+    .policy-section { margin-bottom: 52px; }
+    .section-number {
+      display: inline-block; font-size: 11px; font-weight: 600; color: #4a7cff;
+      text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
+    }
+    .policy-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; color: #fff; margin-bottom: 20px;
+      padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .policy-section p {
+      font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.85;
+      margin-bottom: 16px;
+    }
+    .policy-section p:last-child { margin-bottom: 0; }
+    .policy-section ul {
+      list-style: none; padding: 0; margin: 16px 0; display: flex; flex-direction: column; gap: 10px;
+    }
+    .policy-section ul li {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.7;
+    }
+    .policy-section ul li::before {
+      content: ''; display: block; width: 6px; height: 6px; border-radius: 50%;
+      background: #4a7cff; flex-shrink: 0; margin-top: 8px;
+    }
+ 
+    /* Highlight box */
+    .highlight-box {
+      background: rgba(74,124,255,.08); border: 1px solid rgba(74,124,255,.2);
+      border-radius: 14px; padding: 20px 24px; margin: 20px 0;
+    }
+    .highlight-box p { color: rgba(255,255,255,.65); margin: 0; font-size: 13px; }
+ 
+    .warn-box {
+      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2);
+      border-radius: 14px; padding: 20px 24px; margin: 20px 0;
+    }
+    .warn-box p { color: rgba(255,255,255,.6); margin: 0; font-size: 13px; }
+ 
+    /* Data table */
+    .data-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    .data-table th {
+      text-align: left; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.35);
+      text-transform: uppercase; letter-spacing: .8px; padding: 10px 14px;
+      background: rgba(255,255,255,.04); border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .data-table th:first-child { border-radius: 8px 0 0 0; }
+    .data-table th:last-child { border-radius: 0 8px 0 0; }
+    .data-table td {
+      font-size: 13px; color: rgba(255,255,255,.5); padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.05); vertical-align: top; line-height: 1.6;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,.02); }
+ 
+    /* Contact card */
+    .contact-card {
+      background: linear-gradient(135deg, rgba(74,124,255,.12), rgba(118,75,162,.12));
+      border: 1px solid rgba(74,124,255,.2); border-radius: 18px; padding: 32px;
+      text-align: center;
+    }
+    .contact-card h3 { font-size: 18px; color: #fff; margin-bottom: 10px; }
+    .contact-card p { font-size: 14px; color: rgba(255,255,255,.45); margin-bottom: 20px; }
+    .contact-email {
+      display: inline-block;
+      background: rgba(74,124,255,.15); border: 1px solid rgba(74,124,255,.3);
+      color: #7fa8ff; padding: 10px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 500; text-decoration: none; transition: all .2s;
+    }
+    .contact-email:hover { background: rgba(74,124,255,.28); color: #fff; }
+ 
+    /* Footer */
+    .page-footer {
+      position: relative; z-index: 5;
+      text-align: center; padding: 28px 24px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: 13px; color: rgba(255,255,255,.22);
+    }
+    .page-footer a { color: rgba(255,255,255,.38); text-decoration: none; transition: color .2s; }
+    .page-footer a:hover { color: #fff; }
+ 
+ 
+    /* ── Contact Form ── */
+    .contact-form-card {
+      background: linear-gradient(135deg, rgba(74,124,255,.1), rgba(118,75,162,.08));
+      border: 1px solid rgba(74,124,255,.22); border-radius: 20px; padding: 32px;
+    }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .cf-group { margin-bottom: 16px; }
+    .cf-label {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: .6px;
+      text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 7px;
+    }
+    .cf-input {
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+      color: #fff; font-size: 14px; font-family: inherit; transition: all .2s;
+      box-sizing: border-box;
+    }
+    .cf-input::placeholder { color: rgba(255,255,255,.22); }
+    .cf-input:focus { outline: none; border-color: #7fa8ff; background: rgba(74,124,255,.12); box-shadow: 0 0 0 4px rgba(74,124,255,.12); }
+    .cf-input option { background: #1a1a2e; color: #fff; }
+    .cf-textarea { resize: vertical; min-height: 110px; }
+    .cf-submit {
+      width: 100%; padding: 14px; margin-top: 4px;
+      background: linear-gradient(135deg,#4a7cff,#764ba2);
+      border: none; border-radius: 12px; color: #fff;
+      font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all .3s; box-shadow: 0 4px 14px rgba(74,124,255,.28);
+    }
+    .cf-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(74,124,255,.45); }
+    .cf-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .cf-status { margin-top: 14px; font-size: 13px; text-align: center; min-height: 20px; }
+    .cf-status.success { color: #34d399; }
+    .cf-status.error   { color: #f87171; }
+    @media(max-width:560px) { .cf-row { grid-template-columns: 1fr; } }
+    @media(max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .toc { padding: 22px 20px; }
+      .policy-section h2 { font-size: 22px; }
+      .data-table { font-size: 12px; }
+      .data-table th, .data-table td { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg-glow"></div>
+ 
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="AuraCalendar">
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-btn">← Home</a>
+    <a href="terms.html" class="nav-btn">Terms of Service</a>
+    <a href="mycal.html" class="nav-btn active">Open Calendar</a>
+  </div>
+</nav>
+ 
+<!-- HERO -->
+<div class="page-hero">
+  <div class="page-badge">🔒 Your privacy matters</div>
+  <h1>Privacy Policy</h1>
+  <p>Last updated: March 2026 &nbsp;·&nbsp; Effective immediately</p>
+</div>
+ 
+<!-- CONTENT -->
+<div class="content-wrap">
+ 
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#s1">Information we collect</a></li>
+      <li><a href="#s2">How we use your information</a></li>
+      <li><a href="#s3">Data storage and security</a></li>
+      <li><a href="#s4">Email communications</a></li>
+      <li><a href="#s5">Cookies and tracking</a></li>
+      <li><a href="#s6">Third-party services</a></li>
+      <li><a href="#s7">Your rights</a></li>
+      <li><a href="#s8">Children's privacy</a></li>
+      <li><a href="#s9">Changes to this policy</a></li>
+      <li><a href="#s10">Contact us</a></li>
+    </ol>
+  </div>
+ 
+  <!-- INTRO -->
+  <div class="highlight-box" style="margin-bottom:52px;">
+    <p>AuraCalendar ("we", "us", "our") is committed to protecting your personal information. This Privacy Policy explains what data we collect, why we collect it, and how we keep it safe. We will never sell your personal data to anyone — ever.</p>
+  </div>
+ 
+  <!-- S1 -->
+  <div class="policy-section" id="s1">
+    <span class="section-number">01 — Information we collect</span>
+    <h2>Information We Collect</h2>
+    <p>We only collect information that is strictly necessary to provide the AuraCalendar service. We do not collect any data beyond what is listed below.</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Data type</th>
+          <th>What we collect</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Personal identity</td>
+          <td>Your name</td>
+          <td>To personalise reminder emails with your name</td>
+        </tr>
+        <tr>
+          <td>Contact information</td>
+          <td>Your email address</td>
+          <td>To send event confirmation and reminder emails</td>
+        </tr>
+        <tr>
+          <td>Event data</td>
+          <td>Event title, date, time, category, notes, reminder preference</td>
+          <td>To create your event and schedule your reminder</td>
+        </tr>
+        <tr>
+          <td>Location (approximate)</td>
+          <td>Country code via IP address</td>
+          <td>To show public holidays for your country on the Holiday Calendar</td>
+        </tr>
+        <tr>
+          <td>Usage data</td>
+          <td>None beyond the above</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>We do not collect your phone number, physical address, payment information, or any form of government identification.</p>
+  </div>
+ 
+  <!-- S2 -->
+  <div class="policy-section" id="s2">
+    <span class="section-number">02 — How we use your information</span>
+    <h2>How We Use Your Information</h2>
+    <p>Your data is used exclusively for the following purposes:</p>
+    <ul>
+      <li>Saving your events to our database so they appear on your personal calendar.</li>
+      <li>Sending you a confirmation email immediately after you save an event.</li>
+      <li>Sending you a reminder email at the time you specified before your event.</li>
+      <li>Displaying the correct public holidays for your country on the Holiday Calendar page.</li>
+    </ul>
+    <div class="highlight-box">
+      <p>We will never use your email address for marketing, newsletters, promotions, or any communication unrelated to your own events. Every email you receive from us is triggered only by an action you took.</p>
+    </div>
+  </div>
+ 
+  <!-- S3 -->
+  <div class="policy-section" id="s3">
+    <span class="section-number">03 — Data storage and security</span>
+    <h2>Data Storage and Security</h2>
+    <p>Your event data is stored securely in Google Firestore, a cloud database service provided by Google LLC. Google Firestore is a SOC 2, ISO 27001, and GDPR-compliant platform.</p>
+    <ul>
+      <li>All data is encrypted at rest using AES-256 encryption.</li>
+      <li>All data in transit is protected using TLS 1.2 or higher.</li>
+      <li>Access to your data is restricted to the AuraCalendar application only.</li>
+      <li>No employee or third party can read your event data without explicit authorisation.</li>
+    </ul>
+    <p>We retain your event data for as long as you use the service. Events that have passed and whose reminders have been sent are kept for 90 days and then automatically deleted. You may request immediate deletion at any time (see Section 7).</p>
+  </div>
+ 
+  <!-- S4 -->
+  <div class="policy-section" id="s4">
+    <span class="section-number">04 — Email communications</span>
+    <h2>Email Communications</h2>
+    <p>AuraCalendar sends two types of emails, both of which are transactional — meaning they are sent automatically in response to your own actions:</p>
+    <ul>
+      <li><strong style="color:rgba(255,255,255,.8)">Confirmation email</strong> — sent immediately after you save a new event, confirming the details you entered.</li>
+      <li><strong style="color:rgba(255,255,255,.8)">Reminder email</strong> — sent automatically at the time you chose (e.g., 1 hour before, 1 day before) to remind you of your upcoming event.</li>
+    </ul>
+    <p>Emails are sent via Gmail SMTP using Nodemailer on our server. Your email address is never shared with any email marketing platform or advertising service.</p>
+    <div class="warn-box">
+      <p>⚠ Since these are transactional emails tied to events you created, there is no opt-out for individual event reminders. If you no longer wish to receive emails, you may delete your events or contact us to have your account data removed.</p>
+    </div>
+  </div>
+ 
+  <!-- S5 -->
+  <div class="policy-section" id="s5">
+    <span class="section-number">05 — Cookies and tracking</span>
+    <h2>Cookies and Tracking</h2>
+    <p>AuraCalendar does not use advertising cookies, tracking pixels, or analytics SDKs. We do not track your behaviour across websites.</p>
+    <p>We use browser <strong style="color:rgba(255,255,255,.8)">localStorage</strong> only to temporarily remember your email address within the same browsing session so you do not have to re-enter it every time. This data stays on your device and is never sent to our servers separately.</p>
+    <p>Firebase may set its own essential cookies for authentication and security purposes. These are governed by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:#7fa8ff;">Google's Privacy Policy</a>.</p>
+  </div>
+ 
+  <!-- S6 -->
+  <div class="policy-section" id="s6">
+    <span class="section-number">06 — Third-party services</span>
+    <h2>Third-Party Services</h2>
+    <p>AuraCalendar uses the following third-party services to operate. Each service has its own privacy policy:</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Purpose</th>
+          <th>Data shared</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google Firebase / Firestore</td>
+          <td>Database storage &amp; hosting</td>
+          <td>Event data, email address, name</td>
+        </tr>
+        <tr>
+          <td>Gmail SMTP (Nodemailer)</td>
+          <td>Sending reminder emails</td>
+          <td>Your email address and event details</td>
+        </tr>
+        <tr>
+          <td>ipapi.co</td>
+          <td>Detecting your country for holiday calendar</td>
+          <td>Your IP address (not stored by us)</td>
+        </tr>
+        <tr>
+          <td>Nager.Date API</td>
+          <td>Fetching public holidays for your country</td>
+          <td>Country code only — no personal data</td>
+        </tr>
+        <tr>
+          <td>Google Fonts</td>
+          <td>Loading the Poppins typeface</td>
+          <td>Your IP address (standard browser request)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>We do not share your data with any advertising networks, data brokers, or social media platforms.</p>
+  </div>
+ 
+  <!-- S7 -->
+  <div class="policy-section" id="s7">
+    <span class="section-number">07 — Your rights</span>
+    <h2>Your Rights</h2>
+    <p>You have the following rights regarding your personal data held by AuraCalendar:</p>
+    <ul>
+      <li><strong style="color:rgba(255,255,255,.8)">Right to access</strong> — you may request a copy of all data we hold about you.</li>
+      <li><strong style="color:rgba(255,255,255,.8)">Right to correction</strong> — you may ask us to correct any inaccurate data.</li>
+      <li><strong style="color:rgba(255,255,255,.8)">Right to deletion</strong> — you may request that we permanently delete all your data. We will action this within 7 business days.</li>
+      <li><strong style="color:rgba(255,255,255,.8)">Right to portability</strong> — you may request your event data in a machine-readable format (JSON).</li>
+      <li><strong style="color:rgba(255,255,255,.8)">Right to withdraw consent</strong> — you may stop using the service at any time.</li>
+    </ul>
+    <p>To exercise any of these rights, please contact us at the email address in Section 10. We will respond within 14 business days.</p>
+  </div>
+ 
+  <!-- S8 -->
+  <div class="policy-section" id="s8">
+    <span class="section-number">08 — Children's privacy</span>
+    <h2>Children's Privacy</h2>
+    <p>AuraCalendar is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe that a child under 13 has provided us with personal information, please contact us immediately and we will delete that information.</p>
+  </div>
+ 
+  <!-- S9 -->
+  <div class="policy-section" id="s9">
+    <span class="section-number">09 — Changes to this policy</span>
+    <h2>Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time to reflect changes in our practices or applicable law. When we make a significant change, we will update the "Last updated" date at the top of this page.</p>
+    <p>Continued use of AuraCalendar after any change constitutes your acceptance of the updated policy. We encourage you to review this page periodically.</p>
+  </div>
+ 
+  
+ 
+<!-- FOOTER -->
+<footer class="page-footer">
+  <p>© 2026 <strong style="color:rgba(255,255,255,.45)">AuraCalendar</strong> · Plan With Clarity
+    &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy</a>
+    &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a>
+    &nbsp;·&nbsp; <a href="index.html">Home</a>
+  </p>
+</footer>
+ 
+ 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    // ════════════════════════════════════════════════════════════════
+    //  EMAILJS SETUP — fill in your keys from emailjs.com dashboard
+    //  1. Sign up free at https://www.emailjs.com
+    //  2. Add a Gmail service  → copy the Service ID
+    //  3. Create an email template → copy the Template ID
+    //  4. Go to Account → copy your Public Key
+    // ════════════════════════════════════════════════════════════════
+    const EJS_PUBLIC_KEY  = 'YOUR_EMAILJS_PUBLIC_KEY';
+    const EJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
+    const EJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+ 
+    emailjs.init(EJS_PUBLIC_KEY);
+ 
+    async function sendContactForm() {
+      const name    = document.getElementById('cf_name').value.trim();
+      const email   = document.getElementById('cf_email').value.trim();
+      const subject = document.getElementById('cf_subject').value;
+      const message = document.getElementById('cf_message').value.trim();
+      const status  = document.getElementById('cf_status');
+      const btn     = document.getElementById('cf_btn');
+ 
+      if (!name || !email || !subject || !message) {
+        status.textContent = '⚠ Please fill in all fields before sending.';
+        status.className = 'cf-status error'; return;
+      }
+ 
+      btn.disabled = true; btn.textContent = 'Sending…';
+      status.textContent = ''; status.className = 'cf-status';
+ 
+      try {
+        await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
+          from_name:    name,
+          from_email:   email,
+          subject:      subject,
+          message:      message,
+          reply_to:     email,
+          page_source:  'Privacy Policy page',
+        });
+ 
+        btn.textContent = '✓ Message Sent!';
+        status.textContent = 'Thank you! We will respond within 2–3 business days.';
+        status.className = 'cf-status success';
+        ['cf_name','cf_email','cf_message'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('cf_subject').value = '';
+        setTimeout(() => { btn.disabled = false; btn.textContent = 'Send Message →'; }, 4000);
+ 
+      } catch (err) {
+        console.error('EmailJS error:', err);
+        btn.disabled = false; btn.textContent = 'Send Message →';
+        status.textContent = '❌ Failed to send. Please try again in a moment.';
+        status.className = 'cf-status error';
+      }
+    }
+  </script>
+</body>
+</html>

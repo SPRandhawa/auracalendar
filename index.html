@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AuraCalendar – Smart Event Reminders</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d1a;
+      color: #f0f0ff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: block;
+    }
+    .stars {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(74,124,255,.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 70%, rgba(118,75,162,.2) 0%, transparent 55%),
+        #0d0d1a;
+    }
+    .stars::before, .stars::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 30%, rgba(255,255,255,.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,.55) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 55%, rgba(255,255,255,.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 35% 85%, rgba(255,255,255,.45) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 45%, rgba(255,255,255,.4) 0%, transparent 100%);
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    .stars::after { animation-delay: 2s; opacity: .6; }
+    @keyframes twinkle { from{opacity:.6} to{opacity:1} }
+ 
+    /* NAV */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 60px;
+      backdrop-filter: blur(12px);
+      background: rgba(13,13,26,.6);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .logo { display: flex; align-items: center; gap: 0; text-decoration: none; }
+    .logo img { height: 52px; width: auto; filter: drop-shadow(0 2px 10px rgba(74,200,255,.35)); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      background: linear-gradient(135deg,#4a7cff,#764ba2);
+      color: #fff; border: none;
+      padding: 10px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: opacity .2s, transform .2s;
+      text-decoration: none; display: inline-block;
+      width: auto; margin-top: 0; box-shadow: none;
+    }
+    .nav-cta:hover { opacity:.85; transform:translateY(-1px); box-shadow:none; background:linear-gradient(135deg,#4a7cff,#764ba2); }
+ 
+    /* HERO */
+    .hero { position:relative; z-index:5; text-align:center; padding: 100px 24px 80px; }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(74,124,255,.12); border:1px solid rgba(74,124,255,.3);
+      border-radius:50px; padding:6px 18px;
+      font-size:12px; font-weight:500; color:#7fa8ff;
+      margin-bottom:28px; animation:fadeUp .6s ease both;
+    }
+    .hero-badge::before { content:'✦'; font-size:10px; }
+    .hero h1 {
+      font-family:'Playfair Display',serif;
+      font-size: clamp(42px,7vw,80px); line-height:1.1; color:#fff;
+      animation:fadeUp .7s .1s ease both;
+    }
+    .hero h1 em {
+      font-style:normal;
+      background:linear-gradient(135deg,#4a7cff 0%,#a78bfa 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .hero p {
+      max-width:520px; margin:24px auto 0;
+      color:rgba(255,255,255,.55); font-size:17px; line-height:1.7;
+      animation:fadeUp .7s .2s ease both;
+    }
+    .hero-actions {
+      margin-top:44px;
+      display:flex; justify-content:center; gap:16px; flex-wrap:wrap;
+      animation:fadeUp .7s .3s ease both;
+    }
+    .btn-primary {
+      background:linear-gradient(135deg,#4a7cff,#764ba2);
+      color:#fff; border:none;
+      padding:16px 36px; border-radius:14px;
+      font-size:15px; font-weight:600; cursor:pointer;
+      box-shadow:0 8px 24px rgba(74,124,255,.35);
+      transition:all .3s; text-decoration:none; display:inline-block;
+      width:auto; margin-top:0;
+    }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 14px 32px rgba(74,124,255,.5); background:linear-gradient(135deg,#4a7cff,#764ba2); }
+    .btn-ghost {
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); color:#fff;
+      padding:16px 36px; border-radius:14px; font-size:15px; font-weight:500; cursor:pointer;
+      transition:all .3s; text-decoration:none; display:inline-block; width:auto; margin-top:0;
+    }
+    .btn-ghost:hover { background:rgba(255,255,255,.12); transform:translateY(-2px); box-shadow:none; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+ 
+    /* MINI CALENDAR */
+    .preview-section {
+      position:relative; z-index:5;
+      display:flex; justify-content:center;
+      padding:0 24px 80px;
+      animation:fadeUp .8s .4s ease both;
+    }
+    .mini-cal {
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+      border-radius:24px; padding:28px 32px; backdrop-filter:blur(20px);
+      width:100%; max-width:360px;
+      box-shadow:0 30px 60px rgba(0,0,0,.4);
+    }
+    .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .cal-header h3 { font-size:16px; font-weight:600; color:#fff; }
+    .cal-nav { display:flex; gap:8px; }
+    .cal-nav button {
+      width:28px; height:28px;
+      background:rgba(255,255,255,.08); border:none; border-radius:8px;
+      color:#fff; cursor:pointer; font-size:14px;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s; padding:0; margin:0;
+    }
+    .cal-nav button:hover { background:rgba(74,124,255,.4); transform:none; box-shadow:none; }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+    .cal-day-name { text-align:center; font-size:10px; font-weight:600; color:rgba(255,255,255,.3); padding:4px 0; text-transform:uppercase; letter-spacing:.5px; }
+    .cal-day { text-align:center; font-size:12px; padding:7px 0; border-radius:8px; color:rgba(255,255,255,.6); cursor:pointer; transition:all .15s; position:relative; }
+    .cal-day:hover { background:rgba(74,124,255,.2); color:#fff; }
+    .cal-day.today { background:linear-gradient(135deg,#4a7cff,#764ba2); color:#fff; font-weight:600; box-shadow:0 4px 12px rgba(74,124,255,.4); }
+    .cal-day.has-event::after { content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:#a78bfa; }
+    .cal-day.empty { pointer-events:none; }
+    .open-cal-btn {
+      width:100%; margin-top:20px; padding:12px;
+      background:rgba(74,124,255,.15); border:1px solid rgba(74,124,255,.3);
+      border-radius:12px; color:#7fa8ff; font-size:13px; font-weight:600;
+      cursor:pointer; transition:all .2s; text-decoration:none; display:block; text-align:center;
+    }
+    .open-cal-btn:hover { background:rgba(74,124,255,.3); transform:none; box-shadow:none; }
+ 
+    /* FEATURES */
+    .features { position:relative; z-index:5; padding:60px 24px 100px; max-width:1100px; margin:0 auto; }
+    .section-tag { text-align:center; font-size:12px; font-weight:600; color:#7fa8ff; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+    .section-title { text-align:center; font-family:'Playfair Display',serif; font-size:clamp(28px,4vw,44px); color:#fff; margin-bottom:60px; }
+    .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; }
+    .feature-card {
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+      border-radius:20px; padding:32px 28px;
+      transition:transform .3s, border-color .3s;
+    }
+    .feature-card:hover { transform:translateY(-6px); border-color:rgba(74,124,255,.4); }
+    .feature-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:20px; }
+    .feature-card h4 { font-size:17px; font-weight:600; color:#fff; margin-bottom:10px; }
+    .feature-card p { font-size:13px; color:rgba(255,255,255,.45); line-height:1.7; }
+ 
+    /* HOW */
+    .how-section { position:relative; z-index:5; padding:60px 24px 100px; max-width:900px; margin:0 auto; }
+    .steps { display:flex; flex-direction:column; }
+    .step { display:flex; gap:24px; padding:32px 0; border-bottom:1px solid rgba(255,255,255,.06); }
+    .step:last-child { border-bottom:none; }
+    .step-num { flex-shrink:0; width:44px; height:44px; background:linear-gradient(135deg,#4a7cff,#764ba2); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color:#fff; box-shadow:0 4px 14px rgba(74,124,255,.35); }
+    .step-body h4 { font-size:16px; font-weight:600; color:#fff; margin-bottom:6px; }
+    .step-body p { font-size:13px; color:rgba(255,255,255,.45); line-height:1.7; }
+ 
+    /* CTA */
+    .cta-banner {
+      position:relative; z-index:5;
+      max-width:800px; margin:0 auto 100px;
+      padding:0 24px;
+    }
+    .cta-inner {
+      background:linear-gradient(135deg,rgba(74,124,255,.2),rgba(118,75,162,.2));
+      border:1px solid rgba(74,124,255,.25);
+      border-radius:28px; padding:60px 40px; text-align:center;
+      backdrop-filter:blur(20px);
+    }
+    .cta-inner h2 { font-family:'Playfair Display',serif; font-size:clamp(26px,4vw,40px); color:#fff; margin-bottom:14px; }
+    .cta-inner p { color:rgba(255,255,255,.5); margin-bottom:32px; font-size:15px; }
+ 
+    /* FOOTER */
+    footer { position:relative; z-index:5; text-align:center; padding:32px 24px; border-top:1px solid rgba(255,255,255,.06); color:rgba(255,255,255,.25); font-size:13px; }
+    footer a { color:rgba(255,255,255,.4); text-decoration:none; }
+    footer a:hover { color:#fff; }
+ 
+    @media(max-width:768px) { nav { padding:18px 24px; } .nav-links { display:none; } }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+ 
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="AuraCalendar – Plan With Clarity">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="publiccalendar.html">Holidays</a></li>
+    <li><a href="mycal.html">My Calendar</a></li>
+  </ul>
+  <a href="publiccalendar.html" class="nav-cta">Open Calendar →</a>
+</nav>
+ 
+<section class="hero">
+  <div class="hero-badge">Plan With Clarity · Smart Email Reminders</div>
+  <h1>Never miss a moment<br>with <em>AuraCalendar</em></h1>
+  <p>Set events, get reminded. AuraCalendar sends a personalised email to your registered address before every event — so you're always on time.</p>
+  <div class="hero-actions">
+    <a href="publiccalendar.html" class="btn-primary">🗓 Open Calendar</a>
+    <a href="mycal.html" class="btn-ghost">📅 My Calendar</a>
+  </div>
+</section>
+ 
+<div class="preview-section">
+  <div class="mini-cal">
+    <div class="cal-header">
+      <h3 id="calMonthYear"></h3>
+      <div class="cal-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <a href="mycal.html" class="open-cal-btn">View Full Calendar &amp; Add Events →</a>
+    <a href="mycal.html" class="open-cal-btn" style="margin-top:8px;background:rgba(118,75,162,.15);border-color:rgba(118,75,162,.3);color:#c084fc;">Get Started Free →</a>
+  </div>
+</div>
+ 
+<section class="features" id="features">
+  <p class="section-tag">Why AuraCalendar</p>
+  <h2 class="section-title">Everything you need to stay organised</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(74,124,255,.15)">📬</div>
+      <h4>Email Reminders</h4>
+      <p>Automatic emails land in your inbox before every event — no app needed, no notifications to enable.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(118,75,162,.15)">📅</div>
+      <h4>Visual Calendar</h4>
+      <p>A beautiful, intuitive calendar lets you see all your upcoming events at a glance by month.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(167,139,250,.12)">⏰</div>
+      <h4>Custom Timing</h4>
+      <p>Choose exactly when you want to be reminded — 1 hour, 1 day, or 1 week before your event.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(74,124,255,.15)">🔒</div>
+      <h4>Private & Secure</h4>
+      <p>Your events and email are stored securely. Only you can see your personal calendar.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(118,75,162,.15)">🏷️</div>
+      <h4>Event Categories</h4>
+      <p>Tag events as Personal, Work, Birthday, or Holiday for colour-coded organisation.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(167,139,250,.12)">📱</div>
+      <h4>Works Everywhere</h4>
+      <p>Fully responsive — add events from your phone, tablet, or desktop with equal ease.</p>
+    </div>
+  </div>
+</section>
+ 
+<section class="how-section" id="how">
+  <p class="section-tag">The Process</p>
+  <h2 class="section-title" style="text-align:center;font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);color:#fff;margin-bottom:48px;">Up and running in 3 steps</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Create your account</h4>
+        <p>Sign up with your name and email. That's the address AuraCalendar will send all your reminders to.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Add an event</h4>
+        <p>Pick a date on the calendar, fill in the event title, time, category and how early you'd like a reminder.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Relax — we'll remind you</h4>
+        <p>At the right moment an email arrives in your inbox with all the details of the upcoming event. Done.</p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<div class="cta-banner">
+  <div class="cta-inner">
+    <h2>Ready to remember everything?</h2>
+    <p>Open your calendar and start adding events — your first reminder email is just minutes away.</p>
+    <a href="mycal.html" class="btn-primary">Get Started Free →</a>
+  </div>
+</div>
+ 
+<footer>
+  <p>© 2026 <strong style="color:rgba(255,255,255,.5)">AuraCalendar</strong> · Plan With Clarity &nbsp;|&nbsp; <a href="privacy.html">Privacy</a> &nbsp;·&nbsp; <a href="terms.html">Terms</a></p>
+</footer>
+ 
+<script>
+  let current = new Date();
+  const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function renderCal() {
+    const y = current.getFullYear(), m = current.getMonth();
+    document.getElementById('calMonthYear').textContent = MONTHS[m] + ' ' + y;
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    DAYS.forEach(d => { const el = document.createElement('div'); el.className='cal-day-name'; el.textContent=d; grid.appendChild(el); });
+    const first = new Date(y,m,1).getDay();
+    const days = new Date(y,m+1,0).getDate();
+    const today = new Date();
+    const eventDays = [5,12,18,25];
+    for(let i=0;i<first;i++){ const el=document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el); }
+    for(let d=1;d<=days;d++){
+      const el=document.createElement('div'); el.className='cal-day'; el.textContent=d;
+      if(d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear()) el.classList.add('today');
+      if(eventDays.includes(d)) el.classList.add('has-event');
+      el.onclick = () => window.location.href='calendar.html';
+      grid.appendChild(el);
+    }
+  }
+  function changeMonth(dir){ current.setMonth(current.getMonth()+dir); renderCal(); }
+  renderCal();
+</script>
+</body>
+</html>

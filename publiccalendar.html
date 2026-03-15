@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holiday Calendar – AuraCalendar</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d1a; color: #f0f0ff;
+      min-height: 100vh; overflow-x: hidden; display: block;
+    }
+    .stars {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(74,124,255,.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 70%, rgba(118,75,162,.15) 0%, transparent 55%),
+        #0d0d1a;
+    }
+ 
+    /* NAV */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(13,13,26,.85); border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(12px);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; }
+    .logo img { height: 46px; width: auto; filter: drop-shadow(0 2px 10px rgba(74,200,255,.35)); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-btn {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.7); padding: 8px 18px; border-radius: 9px;
+      font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none;
+      display: inline-block; transition: all .2s; width: auto; margin-top: 0;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.13); color: #fff; transform: none; box-shadow: none; }
+    .nav-btn.primary {
+      background: linear-gradient(135deg,#4a7cff,#764ba2); border-color: transparent; color: #fff;
+    }
+    .nav-btn.primary:hover { opacity: .88; background: linear-gradient(135deg,#4a7cff,#764ba2); }
+ 
+    /* PAGE LAYOUT */
+    .page-wrap {
+      position: relative; z-index: 5;
+      max-width: 1100px; margin: 0 auto;
+      padding: 36px 24px 60px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 28px; align-items: start;
+    }
+ 
+    /* CALENDAR PANEL */
+    .cal-panel {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 24px; padding: 32px; backdrop-filter: blur(20px);
+    }
+    .cal-top {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
+    }
+    .cal-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #fff; }
+    .cal-nav-btns { display: flex; gap: 8px; }
+    .cal-nav-btns button {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,.08); border: none; border-radius: 10px;
+      color: #fff; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s; padding: 0; margin: 0;
+    }
+    .cal-nav-btns button:hover { background: rgba(74,124,255,.4); transform: none; box-shadow: none; }
+    .today-btn {
+      background: rgba(74,124,255,.15); border: 1px solid rgba(74,124,255,.3);
+      color: #7fa8ff; padding: 6px 16px; border-radius: 9px;
+      font-size: 12px; font-weight: 600; cursor: pointer; width: auto; margin: 0;
+    }
+    .today-btn:hover { background: rgba(74,124,255,.3); transform: none; box-shadow: none; }
+ 
+    /* Country badge */
+    .country-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.25);
+      border-radius: 50px; padding: 5px 14px; margin-bottom: 20px;
+      font-size: 12px; font-weight: 500; color: #34d399;
+    }
+    .country-flag { font-size: 16px; }
+ 
+    .week-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; margin-bottom: 8px; }
+    .week-name { text-align: center; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.3); padding: 4px; text-transform: uppercase; letter-spacing: .5px; }
+    .days-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; }
+ 
+    .day-cell {
+      aspect-ratio: 1; border-radius: 12px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; transition: all .18s;
+      background: rgba(255,255,255,.02); border: 1px solid transparent;
+      user-select: none;
+    }
+    .day-cell:hover { background: rgba(74,124,255,.12); border-color: rgba(74,124,255,.25); }
+    .day-cell.empty { pointer-events: none; background: transparent; border: none; }
+    .day-cell.today {
+      background: linear-gradient(135deg,#4a7cff,#764ba2);
+      border-color: transparent; box-shadow: 0 4px 14px rgba(74,124,255,.4);
+    }
+    .day-cell.today .day-num { color: #fff; font-weight: 700; }
+    .day-cell.is-holiday {
+      background: rgba(52,211,153,.08);
+      border-color: rgba(52,211,153,.3);
+    }
+    .day-cell.is-holiday:hover { background: rgba(52,211,153,.18); }
+    .day-cell.is-sunday .day-num { color: rgba(248,113,113,.7); }
+    .day-cell.selected { border-color: #4a7cff; box-shadow: 0 0 0 2px rgba(74,124,255,.2); }
+ 
+    .day-num { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.7); line-height: 1; }
+    .holiday-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #34d399; margin-top: 3px; flex-shrink: 0;
+    }
+ 
+    /* SELECTED DAY HOLIDAY INFO */
+    .day-info {
+      margin-top: 24px; border-top: 1px solid rgba(255,255,255,.07); padding-top: 20px;
+    }
+    .day-info-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.4); margin-bottom: 10px; }
+    .holiday-chip {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.2);
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;
+    }
+    .hchip-dot { width: 10px; height: 10px; border-radius: 50%; background: #34d399; flex-shrink: 0; }
+    .hchip-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .hchip-date { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 2px; }
+    .no-holiday { font-size: 13px; color: rgba(255,255,255,.25); font-style: italic; }
+ 
+    /* SIDE PANEL */
+    .side-panel {
+      display: flex; flex-direction: column; gap: 20px;
+    }
+ 
+    .upcoming-panel {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 20px; padding: 24px; backdrop-filter: blur(20px);
+    }
+    .upcoming-panel h3 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 16px; }
+ 
+    .holiday-item {
+      display: flex; gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .holiday-item:last-child { border-bottom: none; }
+    .holiday-date-badge {
+      flex-shrink: 0; width: 40px; height: 44px;
+      background: rgba(52,211,153,.12); border: 1px solid rgba(52,211,153,.2);
+      border-radius: 10px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .hbadge-day { font-size: 16px; font-weight: 700; color: #34d399; line-height: 1; }
+    .hbadge-mon { font-size: 9px; font-weight: 600; color: rgba(52,211,153,.6); text-transform: uppercase; letter-spacing: .5px; }
+    .holiday-item-info { flex: 1; }
+    .holiday-item-name { font-size: 13px; font-weight: 600; color: #fff; }
+    .holiday-item-days { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 2px; }
+ 
+    /* CTA panel */
+    .cta-side {
+      background: linear-gradient(135deg, rgba(74,124,255,.15), rgba(118,75,162,.15));
+      border: 1px solid rgba(74,124,255,.2); border-radius: 20px; padding: 24px;
+      text-align: center;
+    }
+    .cta-side h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .cta-side p { font-size: 12px; color: rgba(255,255,255,.4); margin-bottom: 16px; line-height: 1.6; }
+    .cta-side-btn {
+      display: block; width: 100%; padding: 11px;
+      background: linear-gradient(135deg,#4a7cff,#764ba2);
+      border: none; border-radius: 10px; color: #fff;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      text-decoration: none; text-align: center;
+      transition: all .2s; margin-top: 0;
+    }
+    .cta-side-btn:hover { opacity: .85; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(74,124,255,.35); background: linear-gradient(135deg,#4a7cff,#764ba2); }
+    .cta-side-btn.ghost {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); margin-top: 8px;
+    }
+    .cta-side-btn.ghost:hover { background: rgba(255,255,255,.12); box-shadow: none; }
+ 
+    /* Legend */
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,.4); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+ 
+    /* Loading state */
+    .loading-bar {
+      height: 3px; background: rgba(255,255,255,.06); border-radius: 2px;
+      margin-bottom: 20px; overflow: hidden;
+    }
+    .loading-bar-inner {
+      height: 100%; width: 0%; background: linear-gradient(90deg,#4a7cff,#34d399);
+      border-radius: 2px; transition: width .4s ease;
+    }
+ 
+    @media(max-width:900px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      nav { padding: 16px 20px; }
+      .nav-right .nav-btn:first-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+ 
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="AuraCalendar">
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-btn">← Home</a>
+    <a href="mycal.html" class="nav-btn">My Calendar</a>
+    <a href="mycal.html" class="nav-btn primary">Get Started Free →</a>
+  </div>
+</nav>
+ 
+<div class="page-wrap">
+ 
+  <!-- LEFT: CALENDAR -->
+  <div class="cal-panel">
+    <div class="cal-top">
+      <h2 class="cal-title" id="calTitle">Loading…</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="today-btn" onclick="goToday()">Today</button>
+        <div class="cal-nav-btns">
+          <button onclick="changeMonth(-1)">‹</button>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Country badge -->
+    <div class="country-badge" id="countryBadge">
+      <span class="country-flag" id="countryFlag">🌍</span>
+      <span id="countryName">Detecting your location…</span>
+    </div>
+ 
+    <!-- Loading bar -->
+    <div class="loading-bar"><div class="loading-bar-inner" id="loadingBar"></div></div>
+ 
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#34d399"></div> Public holiday</div>
+      <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,#4a7cff,#764ba2)"></div> Today</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(248,113,113,.7)"></div> Sunday</div>
+    </div>
+ 
+    <div class="week-row">
+      <div class="week-name">Sun</div><div class="week-name">Mon</div>
+      <div class="week-name">Tue</div><div class="week-name">Wed</div>
+      <div class="week-name">Thu</div><div class="week-name">Fri</div>
+      <div class="week-name">Sat</div>
+    </div>
+    <div class="days-grid" id="daysGrid"></div>
+ 
+    <div class="day-info" id="dayInfo">
+      <div class="day-info-label" id="dayInfoLabel">Click a highlighted date to see the holiday</div>
+      <div id="dayInfoContent"><p class="no-holiday">No holiday on this day.</p></div>
+    </div>
+  </div>
+ 
+  <!-- RIGHT: SIDE PANEL -->
+  <div class="side-panel">
+ 
+    <!-- Upcoming holidays -->
+    <div class="upcoming-panel">
+      <h3 id="upcomingTitle">Upcoming Holidays</h3>
+      <div id="upcomingList"><p class="no-holiday" style="font-size:12px;">Loading…</p></div>
+    </div>
+ 
+    <!-- CTA -->
+    <div class="cta-side">
+      <h4>Want your own reminders?</h4>
+      <p>Add personal events and get email reminders before every one of them — free forever.</p>
+      <a href="mycal.html" class="cta-side-btn">View Full Calendar &amp; Add Events</a>
+      <a href="mycal.html" class="cta-side-btn ghost">Get Started Free →</a>
+    </div>
+ 
+  </div>
+</div>
+ 
+<script>
+    
+  // ── State ─────────────────────────────────────────────────────────────────
+  let current = new Date();
+  let selectedDate = null;
+  let holidays = {};   // { "2026-01-01": "New Year's Day", ... }
+  let countryCode = 'IN';
+  let countryDisplayName = 'India';
+ 
+  const MONTHS = ['January','February','March','April','May','June','July',
+                  'August','September','October','November','December'];
+  const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+ 
+  // ── Country flags map ─────────────────────────────────────────────────────
+  const FLAGS = {
+    IN:'🇮🇳', US:'🇺🇸', GB:'🇬🇧', CA:'🇨🇦', AU:'🇦🇺', DE:'🇩🇪', FR:'🇫🇷',
+    JP:'🇯🇵', CN:'🇨🇳', BR:'🇧🇷', MX:'🇲🇽', IT:'🇮🇹', ES:'🇪🇸', RU:'🇷🇺',
+    KR:'🇰🇷', NG:'🇳🇬', ZA:'🇿🇦', PK:'🇵🇰', BD:'🇧🇩', ID:'🇮🇩', PH:'🇵🇭',
+    MY:'🇲🇾', SG:'🇸🇬', NZ:'🇳🇿', NL:'🇳🇱', SE:'🇸🇪', NO:'🇳🇴', DK:'🇩🇰',
+    FI:'🇫🇮', PL:'🇵🇱', PT:'🇵🇹', AR:'🇦🇷', CL:'🇨🇱', CO:'🇨🇴', EG:'🇪🇬',
+    GH:'🇬🇭', KE:'🇰🇪', TH:'🇹🇭', VN:'🇻🇳', AE:'🇦🇪', SA:'🇸🇦', TR:'🇹🇷',
+  };
+ 
+  // ── Step 1: Detect country via IP ─────────────────────────────────────────
+  async function detectCountry() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      countryCode = data.country_code || 'IN';
+      countryDisplayName = data.country_name || 'India';
+    } catch {
+      countryCode = 'IN';
+      countryDisplayName = 'India';
+    }
+    document.getElementById('countryFlag').textContent = FLAGS[countryCode] || '🌍';
+    document.getElementById('countryName').textContent = countryDisplayName + ' — Public Holidays';
+    setLoadingBar(40);
+  }
+ 
+  // ── Step 2: Fetch holidays from Nager.Date API (free, no key needed) ──────
+  async function fetchHolidays(year) {
+    try {
+      const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/${countryCode}`);
+      if (!res.ok) throw new Error('API failed');
+      const data = await res.json();
+      data.forEach(h => { holidays[h.date] = h.localName || h.name; });
+    } catch {
+      // Fallback: only fixed-date gazetted holidays — floating festivals like
+      // Holi, Diwali, Eid are NOT hardcoded because dates change every year.
+      // They will appear correctly when the live Nager.Date API loads.
+      if (countryCode === 'IN') {
+        const y = year;
+        const fallback = {
+          [`${y}-01-01`]: "New Year's Day",
+          [`${y}-01-26`]: "Republic Day",
+          [`${y}-04-14`]: "Dr. Ambedkar Jayanti",
+          [`${y}-05-01`]: "Labour Day",
+          [`${y}-08-15`]: "Independence Day",
+          [`${y}-10-02`]: "Gandhi Jayanti",
+          [`${y}-12-25`]: "Christmas Day",
+        };
+        Object.assign(holidays, fallback);
+      }
+    }
+  }
+ 
+  function setLoadingBar(pct) {
+    document.getElementById('loadingBar').style.width = pct + '%';
+  }
+ 
+  // ── Init ──────────────────────────────────────────────────────────────────
+  async function init() {
+    setLoadingBar(10);
+    await detectCountry();
+    setLoadingBar(40);
+    const year = current.getFullYear();
+    await fetchHolidays(year);
+    // Also fetch next year in case we navigate forward
+    await fetchHolidays(year + 1);
+    setLoadingBar(100);
+    setTimeout(() => document.getElementById('loadingBar').style.width = '0%', 600);
+    renderCalendar();
+    renderUpcoming();
+  }
+ 
+  // ── Calendar rendering ────────────────────────────────────────────────────
+  function renderCalendar() {
+    const y = current.getFullYear(), m = current.getMonth();
+    document.getElementById('calTitle').textContent = MONTHS[m] + ' ' + y;
+    const grid = document.getElementById('daysGrid');
+    grid.innerHTML = '';
+    const first = new Date(y, m, 1).getDay();
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const today = new Date();
+ 
+    for (let i = 0; i < first; i++) {
+      const el = document.createElement('div'); el.className = 'day-cell empty'; grid.appendChild(el);
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dayOfWeek = new Date(y, m, d).getDay();
+      const el = document.createElement('div');
+      let classes = 'day-cell';
+      if (d===today.getDate() && m===today.getMonth() && y===today.getFullYear()) classes += ' today';
+      if (holidays[dateStr]) classes += ' is-holiday';
+      if (dayOfWeek === 0) classes += ' is-sunday';
+      if (selectedDate === dateStr) classes += ' selected';
+      el.className = classes;
+ 
+      const num = document.createElement('div'); num.className = 'day-num'; num.textContent = d;
+      el.appendChild(num);
+ 
+      if (holidays[dateStr]) {
+        const dot = document.createElement('div'); dot.className = 'holiday-dot'; el.appendChild(dot);
+      }
+ 
+      el.title = holidays[dateStr] || '';
+      el.onclick = () => selectDate(dateStr);
+      grid.appendChild(el);
+    }
+  }
+ 
+  function selectDate(dateStr) {
+    selectedDate = dateStr;
+    renderCalendar();
+    const [y, m, d] = dateStr.split('-');
+    const label = MONTHS[parseInt(m)-1] + ' ' + parseInt(d) + ', ' + y;
+    document.getElementById('dayInfoLabel').textContent = label;
+    const content = document.getElementById('dayInfoContent');
+    if (holidays[dateStr]) {
+      content.innerHTML = `
+        <div class="holiday-chip">
+          <div class="hchip-dot"></div>
+          <div>
+            <div class="hchip-name">${holidays[dateStr]}</div>
+            <div class="hchip-date">Public holiday · ${countryDisplayName}</div>
+          </div>
+        </div>`;
+    } else {
+      content.innerHTML = '<p class="no-holiday">No public holiday on this day.</p>';
+    }
+  }
+ 
+  // ── Upcoming holidays list ────────────────────────────────────────────────
+  function renderUpcoming() {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const list = document.getElementById('upcomingList');
+    document.getElementById('upcomingTitle').textContent = 'Upcoming Holidays — ' + countryDisplayName;
+ 
+    const upcoming = Object.entries(holidays)
+      .filter(([d]) => new Date(d) >= today)
+      .sort(([a],[b]) => new Date(a) - new Date(b))
+      .slice(0, 8);
+ 
+    if (!upcoming.length) {
+      list.innerHTML = '<p class="no-holiday" style="font-size:12px;">No upcoming holidays found.</p>';
+      return;
+    }
+ 
+    list.innerHTML = upcoming.map(([dateStr, name]) => {
+      const dt = new Date(dateStr);
+      const diffDays = Math.round((dt - today) / (1000*60*60*24));
+      const daysText = diffDays === 0 ? 'Today!' : diffDays === 1 ? 'Tomorrow' : `In ${diffDays} days`;
+      return `
+        <div class="holiday-item" onclick="navigateToDate('${dateStr}')" style="cursor:pointer;">
+          <div class="holiday-date-badge">
+            <span class="hbadge-day">${dt.getDate()}</span>
+            <span class="hbadge-mon">${MONTH_SHORT[dt.getMonth()]}</span>
+          </div>
+          <div class="holiday-item-info">
+            <div class="holiday-item-name">${name}</div>
+            <div class="holiday-item-days">${daysText}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+ 
+  function navigateToDate(dateStr) {
+    const [y, m] = dateStr.split('-');
+    current = new Date(parseInt(y), parseInt(m)-1, 1);
+    renderCalendar();
+    selectDate(dateStr);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+ 
+  function changeMonth(dir) {
+    current.setMonth(current.getMonth() + dir);
+    // Fetch holidays for the new year if needed
+    const newYear = current.getFullYear();
+    const alreadyFetched = Object.keys(holidays).some(d => d.startsWith(newYear + '-'));
+    if (!alreadyFetched) {
+      fetchHolidays(newYear).then(() => { renderCalendar(); renderUpcoming(); });
+    } else {
+      renderCalendar();
+    }
+  }
+ 
+  function goToday() { current = new Date(); renderCalendar(); }
+ 
+  init();
+</script>
+</body>
+</html>

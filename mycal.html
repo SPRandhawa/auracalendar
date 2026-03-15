@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Calendar – AuraCalendar</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif; background: #0d0d1a; color: #f0f0ff;
+      min-height: 100vh; overflow-x: hidden; display: block;
+    }
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(13,13,26,.85); border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(12px);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; }
+    .logo img { height: 46px; width: auto; filter: drop-shadow(0 2px 10px rgba(74,200,255,.35)); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-btn {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.7); padding: 8px 18px; border-radius: 9px;
+      font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none;
+      display: inline-block; transition: all .2s; width: auto; margin-top: 0;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.13); color: #fff; transform: none; box-shadow: none; }
+    .page-wrap {
+      position: relative; z-index: 5; max-width: 1200px; margin: 0 auto;
+      padding: 36px 24px 60px;
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 28px; align-items: start;
+    }
+    .cal-panel {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 24px; padding: 32px; backdrop-filter: blur(20px);
+    }
+    .cal-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .cal-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #fff; }
+    .cal-nav-btns { display: flex; gap: 8px; }
+    .cal-nav-btns button {
+      width: 36px; height: 36px; background: rgba(255,255,255,.08); border: none;
+      border-radius: 10px; color: #fff; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s; padding: 0; margin: 0;
+    }
+    .cal-nav-btns button:hover { background: rgba(74,124,255,.4); transform: none; box-shadow: none; }
+    .today-btn {
+      background: rgba(74,124,255,.15); border: 1px solid rgba(74,124,255,.3);
+      color: #7fa8ff; padding: 6px 16px; border-radius: 9px; font-size: 12px;
+      font-weight: 600; cursor: pointer; width: auto; margin: 0;
+    }
+    .today-btn:hover { background: rgba(74,124,255,.3); transform: none; box-shadow: none; }
+    .empty-hint {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(74,124,255,.08); border: 1px solid rgba(74,124,255,.2);
+      border-radius: 10px; padding: 10px 16px; margin-bottom: 20px;
+      font-size: 12px; color: rgba(255,255,255,.45);
+    }
+    .empty-hint.hidden { display: none; }
+    .week-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; margin-bottom: 8px; }
+    .week-name { text-align: center; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.3); padding: 4px; text-transform: uppercase; letter-spacing: .5px; }
+    .days-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; }
+    .day-cell {
+      aspect-ratio: 1; border-radius: 12px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; transition: all .15s;
+      background: rgba(255,255,255,.02); border: 1px solid transparent;
+    }
+    .day-cell:hover { background: rgba(74,124,255,.15); border-color: rgba(74,124,255,.3); }
+    .day-cell.empty { pointer-events: none; background: transparent; border: none; }
+    .day-cell.today { background: linear-gradient(135deg,#4a7cff,#764ba2); border-color: transparent; box-shadow: 0 4px 14px rgba(74,124,255,.4); }
+    .day-cell.today .day-num { color: #fff; font-weight: 700; }
+    .day-cell.selected { border-color: #4a7cff; background: rgba(74,124,255,.18); }
+    .day-cell.has-events { background: rgba(74,124,255,.06); border-color: rgba(74,124,255,.2); }
+    .day-num { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.7); }
+    .event-dots { display: flex; gap: 3px; margin-top: 3px; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; }
+    .dot-work     { background: #4a7cff; }
+    .dot-personal { background: #a78bfa; }
+    .dot-birthday { background: #f59e0b; }
+    .dot-holiday  { background: #34d399; }
+    .events-for-day { margin-top: 24px; border-top: 1px solid rgba(255,255,255,.07); padding-top: 20px; }
+    .events-for-day h4 { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.4); margin-bottom: 12px; }
+    .event-chip {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; transition: border-color .2s;
+    }
+    .event-chip:hover { border-color: rgba(74,124,255,.4); }
+    .chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .chip-info { flex: 1; }
+    .chip-name { font-size: 13px; font-weight: 600; color: #fff; }
+    .chip-meta { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 2px; }
+    .no-events { font-size: 13px; color: rgba(255,255,255,.25); font-style: italic; }
+    .form-panel {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 24px; padding: 32px 28px; backdrop-filter: blur(20px);
+      position: sticky; top: 24px;
+    }
+    .form-panel h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; margin-bottom: 6px; }
+    .form-panel .subtitle { font-size: 13px; color: rgba(255,255,255,.35); margin-bottom: 24px; }
+    .form-group { margin-bottom: 15px; }
+    .form-panel label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.55); margin-bottom: 7px; display: block; text-transform: uppercase; letter-spacing: .5px; }
+    .form-panel input, .form-panel select, .form-panel textarea {
+      background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12); color: #fff;
+      border-radius: 12px; width: 100%; padding: 12px 16px;
+      font-size: 14px; font-family: inherit; transition: all .2s;
+    }
+    .form-panel input::placeholder, .form-panel textarea::placeholder { color: rgba(255,255,255,.2); }
+    .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus {
+      border-color: #4a7cff; background: rgba(74,124,255,.1); outline: none;
+      box-shadow: 0 0 0 4px rgba(74,124,255,.12);
+    }
+    .form-panel select option { background: #1a1a2e; color: #fff; }
+    .form-panel textarea { resize: vertical; min-height: 72px; }
+    .cat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .cat-option { display: none; }
+    .cat-label {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 10px; border-radius: 10px; border: 1.5px solid rgba(255,255,255,.1);
+      font-size: 12px; font-weight: 500; color: rgba(255,255,255,.45); cursor: pointer;
+      transition: all .2s; background: rgba(255,255,255,.03); text-align: center;
+    }
+    .cat-option:checked + .cat-label { border-color: #4a7cff; background: rgba(74,124,255,.18); color: #fff; }
+    .form-divider { border: none; border-top: 1px solid rgba(255,255,255,.07); margin: 16px 0; }
+    .submit-btn {
+      width: 100%; padding: 14px; margin-top: 4px;
+      background: linear-gradient(135deg,#4a7cff,#764ba2); border: none; border-radius: 12px;
+      color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: all .3s;
+      box-shadow: 0 4px 14px rgba(74,124,255,.3);
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(74,124,255,.45); background: linear-gradient(135deg,#4a7cff,#764ba2); }
+    .submit-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .form-cta-links { display: flex; gap: 8px; margin-top: 12px; }
+    .form-cta-link {
+      flex: 1; padding: 10px; text-align: center; border-radius: 10px;
+      font-size: 12px; font-weight: 500; text-decoration: none; transition: all .2s;
+      border: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.45);
+      background: rgba(255,255,255,.03);
+    }
+    .form-cta-link:hover { background: rgba(255,255,255,.08); color: #fff; transform: none; box-shadow: none; }
+    .toast {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: linear-gradient(135deg,#4a7cff,#764ba2); color: #fff; padding: 14px 28px;
+      border-radius: 14px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 8px 24px rgba(74,124,255,.4); z-index: 100;
+      transition: transform .4s cubic-bezier(.34,1.56,.64,1); pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { background: linear-gradient(135deg,#e74c3c,#c0392b); }
+    .cal-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+    .leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: rgba(255,255,255,.35); }
+    .leg-dot { width: 7px; height: 7px; border-radius: 50%; }
+    @media(max-width:900px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .form-panel { position: static; }
+      nav { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="AuraCalendar">
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-btn">← Home</a>
+    <a href="publiccalendar.html" class="nav-btn">🗓 Holiday Calendar</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="cal-panel">
+    <div class="cal-top">
+      <h2 class="cal-title" id="calTitle"></h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="today-btn" onclick="goToday()">Today</button>
+        <div class="cal-nav-btns">
+          <button onclick="changeMonth(-1)">‹</button>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-hint" id="emptyHint">
+      📧 Enter your email address on the right to see your calendar events!
+    </div>
+
+    <div class="cal-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#4a7cff"></div>Work</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>Personal</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Birthday</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#34d399"></div>Holiday</div>
+    </div>
+
+    <div class="week-row">
+      <div class="week-name">Sun</div><div class="week-name">Mon</div>
+      <div class="week-name">Tue</div><div class="week-name">Wed</div>
+      <div class="week-name">Thu</div><div class="week-name">Fri</div>
+      <div class="week-name">Sat</div>
+    </div>
+    <div class="days-grid" id="daysGrid"></div>
+
+    <div class="events-for-day">
+      <h4 id="selectedDateLabel">Click any date to view or add events</h4>
+      <div id="eventList"><p class="no-events">No events yet. Add one using the form →</p></div>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <h3>➕ Add New Event</h3>
+    <p class="subtitle">Save an event and get an email reminder automatically.</p>
+
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="userName" placeholder="e.g. John Doe">
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="userEmail" placeholder="you@gmail.com" onblur="loadEvents()">
+    </div>
+
+    <hr class="form-divider">
+
+    <div class="form-group">
+      <label>Event Title</label>
+      <input type="text" id="eventTitle" placeholder="e.g. Doctor appointment, Birthday…">
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="eventDate">
+    </div>
+    <div class="form-group">
+      <label>Time</label>
+      <input type="time" id="eventTime">
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <div class="cat-row">
+        <input type="radio" name="category" value="work" id="catWork" class="cat-option" checked>
+        <label for="catWork" class="cat-label">💼 Work</label>
+        <input type="radio" name="category" value="personal" id="catPersonal" class="cat-option">
+        <label for="catPersonal" class="cat-label">😊 Personal</label>
+        <input type="radio" name="category" value="birthday" id="catBirthday" class="cat-option">
+        <label for="catBirthday" class="cat-label">🎂 Birthday</label>
+        <input type="radio" name="category" value="holiday" id="catHoliday" class="cat-option">
+        <label for="catHoliday" class="cat-label">🏖 Holiday</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Remind Me</label>
+      <select id="reminderTime">
+        <option value="15">15 minutes before</option>
+        <option value="30">30 minutes before</option>
+        <option value="60" selected>1 hour before</option>
+        <option value="1440">1 day before</option>
+        <option value="10080">1 week before</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+      <textarea id="eventNotes" placeholder="Any extra details…"></textarea>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="addEvent()">
+      Save Event &amp; Set Reminder ✓
+    </button>
+
+    <div class="form-cta-links">
+      <a href="mycal.html" class="form-cta-link">View Full Calendar &amp; Add Events</a>
+      <a href="index.html" class="form-cta-link">Get Started Free →</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+
+let allEvents = [];
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth();
+
+async function loadEvents(){
+    const hint = document.getElementById("emptyHint");
+    const email = document.getElementById("userEmail").value.trim();
+
+    if(!email){
+        hint.classList.remove("hidden");
+        hint.innerHTML = "📧 Enter your email address on the right to see your calendar events!";
+        allEvents = [];
+        renderCalendar();
+        return;
+    }
+
+    try{
+        const response = await fetch(`http://127.0.0.1:5000/get_events?email=${email}`);
+        allEvents = await response.json();
+        renderCalendar();
+        if(allEvents.length > 0){
+            hint.classList.add("hidden");
+        } else {
+            hint.classList.remove("hidden");
+            hint.innerHTML = "💡 No events found for this email. Add your first event using the form!";
+        }
+    }catch(error){
+        console.error("Could not load events", error);
+    }
+}
+
+function getEventsForDate(dateStr){
+    return allEvents.filter(e => e.date === dateStr);
+}
+
+function renderCalendar(){
+    const months = ["January","February","March","April","May","June",
+                    "July","August","September","October","November","December"];
+    document.getElementById("calTitle").textContent = months[currentMonth] + " " + currentYear;
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth+1, 0).getDate();
+    const today = new Date();
+    const grid = document.getElementById("daysGrid");
+    grid.innerHTML = "";
+    for(let i = 0; i < firstDay; i++){
+        const empty = document.createElement("div");
+        empty.className = "day-cell empty";
+        grid.appendChild(empty);
+    }
+    for(let d = 1; d <= daysInMonth; d++){
+        const dateStr = currentYear + "-" +
+            String(currentMonth+1).padStart(2,"0") + "-" +
+            String(d).padStart(2,"0");
+        const dayEvents = getEventsForDate(dateStr);
+        const cell = document.createElement("div");
+        cell.className = "day-cell" + (dayEvents.length > 0 ? " has-events" : "");
+        if(d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()){
+            cell.classList.add("today");
+        }
+        const num = document.createElement("div");
+        num.className = "day-num";
+        num.textContent = d;
+        cell.appendChild(num);
+        if(dayEvents.length > 0){
+            const dots = document.createElement("div");
+            dots.className = "event-dots";
+            dayEvents.slice(0,3).forEach(ev => {
+                const dot = document.createElement("div");
+                dot.className = "dot dot-" + ev.category;
+                dots.appendChild(dot);
+            });
+            cell.appendChild(dots);
+        }
+        cell.onclick = () => showEventsForDate(dateStr, d, currentMonth, currentYear);
+        grid.appendChild(cell);
+    }
+}
+
+function showEventsForDate(dateStr, d, month, year){
+    const months = ["January","February","March","April","May","June",
+                    "July","August","September","October","November","December"];
+    document.getElementById("selectedDateLabel").textContent =
+        months[month] + " " + d + ", " + year;
+    const dayEvents = getEventsForDate(dateStr);
+    const list = document.getElementById("eventList");
+    if(dayEvents.length === 0){
+        list.innerHTML = '<p class="no-events">No events on this day.</p>';
+        return;
+    }
+    const colors = {
+        work:"#4a7cff", personal:"#a78bfa",
+        birthday:"#f59e0b", holiday:"#34d399"
+    };
+    list.innerHTML = dayEvents.map(ev => `
+        <div class="event-chip">
+            <div class="chip-dot" style="background:${colors[ev.category]||'#4a7cff'}"></div>
+            <div class="chip-info">
+                <div class="chip-name">${ev.title}</div>
+                <div class="chip-meta">${ev.time} · ${ev.category} ·
+                    Reminder: ${ev.reminder_minutes} min before</div>
+            </div>
+        </div>
+    `).join("");
+}
+
+function changeMonth(dir){
+    currentMonth += dir;
+    if(currentMonth > 11){ currentMonth = 0; currentYear++; }
+    if(currentMonth < 0){ currentMonth = 11; currentYear--; }
+    renderCalendar();
+}
+
+function goToday(){
+    currentYear = new Date().getFullYear();
+    currentMonth = new Date().getMonth();
+    renderCalendar();
+}
+
+async function addEvent(){
+    const name = document.getElementById("userName").value.trim();
+    const email = document.getElementById("userEmail").value.trim();
+    const title = document.getElementById("eventTitle").value.trim();
+    const date = document.getElementById("eventDate").value;
+    const time = document.getElementById("eventTime").value || "09:00";
+    const category = document.querySelector('input[name="category"]:checked').value;
+    const reminder = document.getElementById("reminderTime").value;
+    const notes = document.getElementById("eventNotes").value.trim();
+
+    if(!name || !email || !title || !date){
+        alert("⚠ Please fill Name, Email, Title and Date");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("title", title);
+    formData.append("category", category);
+    formData.append("date", date);
+    formData.append("time", time);
+    formData.append("reminder_minutes", reminder);
+    formData.append("notes", notes);
+
+    try{
+        const response = await fetch("http://127.0.0.1:5000/add_event",{
+            method:"POST",
+            body:formData
+        });
+        const result = await response.json();
+        alert("✅ Event Saved Successfully");
+        document.getElementById("eventTitle").value="";
+        document.getElementById("eventTime").value="";
+        document.getElementById("eventNotes").value="";
+        loadEvents();
+    }catch(error){
+        console.error(error);
+        alert("❌ Error saving event");
+    }
+}
+
+renderCalendar();
+
+</script>
+</body>
+</html>
