@@ -10,8 +10,12 @@ from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "")
 SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD", "")
@@ -130,7 +134,7 @@ def add_event():
     conn = sqlite3.connect("calendar.db")
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO events 
+        INSERT INTO events
         (name, email, title, category, event_date, event_time, reminder_minutes, notes)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (name, email, title, category, date, time, reminder, notes))
@@ -168,4 +172,4 @@ scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
 scheduler_thread.start()
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
