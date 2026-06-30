@@ -5,6 +5,7 @@ import os
 import smtplib
 import schedule
 import threading
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
@@ -68,6 +69,9 @@ def send_email(to_email, to_name, event_title, event_date, event_time):
     server.quit()
 
 def check_reminders():
+    import pytz # Import timezone support
+    from datetime import datetime, timedelta
+
     conn = sqlite3.connect("calendar.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -75,12 +79,18 @@ def check_reminders():
         FROM events WHERE reminder_sent = 0
     """)
     events = cursor.fetchall()
-    from datetime import datetime, timedelta
-    now = datetime.now()
+    
+    # FIX: Force the server to read "now" in Indian Standard Time (IST)
+    ist = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(ist).replace(tzinfo=None) # Strip timezone data to match database comparison safely
+    
     for event in events:
         id, name, email, title, date, time, reminder_mins = event
+        
+        # Parse the raw event string from the database
         event_dt = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
         reminder_dt = event_dt - timedelta(minutes=int(reminder_mins))
+        
         if now >= reminder_dt:
             try:
                 send_email(email, name, title, date, time)
